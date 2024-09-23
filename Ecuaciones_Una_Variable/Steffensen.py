@@ -45,3 +45,4 @@ if resultado is not None:
     print(f"La solución aproximada encontrada es: {resultado}")
 else:
     print("El método de Steffensen no convergió o la función g retornó un valor no válido.")
+
