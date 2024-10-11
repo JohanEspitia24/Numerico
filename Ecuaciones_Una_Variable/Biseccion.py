@@ -13,9 +13,14 @@ def f(E, M, e):
 # Método de Bisección
 def biseccion(f, a, b, M, e, tol, max_iter):
     FA = f(a, M, e)
+    FB = f(b, M, e)
+    
+    # Imprimir los valores de la función en los extremos
+    print(f"f(a) = {FA}")
+    print(f"f(b) = {FB}")
     
     # Verificar el teorema de Bolzano para asegurar que hay una raíz en el intervalo
-    if FA * f(b, M, e) >= 0:
+    if FA * FB >= 0:
         print("El teorema de Bolzano no se cumple en el intervalo dado.")
         return None
     
@@ -39,9 +44,9 @@ def biseccion(f, a, b, M, e, tol, max_iter):
     print(f'El método fracasó después de {max_iter} iteraciones.')
     return None
 
-# Definir el intervalo inicial para E
-a = 0
-b = 2 * np.pi
+# Definir un intervalo ajustado alrededor de M
+a = M - 1  # Límite inferior cerca de M
+b = M + 1  # Límite superior cerca de M
 
 # Ejecutar el método de bisección para encontrar E
 E_solution = biseccion(f, a, b, M, e, tol, max_iter)
