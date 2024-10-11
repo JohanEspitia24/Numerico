@@ -1,59 +1,48 @@
-def biseccion(f, a, b, TOL, N0):
-    """
-    Implementa el método de bisección para encontrar una raíz de la función f en el intervalo [a, b].
-    
-    Parámetros:
-    f (callable): Función para la cual queremos encontrar una raíz.
-    a (float): Límite inferior del intervalo inicial.
-    b (float): Límite superior del intervalo inicial.
-    TOL (float): Tolerancia, el criterio de parada que determina la precisión deseada.
-    N0 (int): Número máximo de iteraciones permitidas.
-    
-    Retorna:
-    float o None: La raíz aproximada de la función o None si el método fracasa o no se cumple Bolzano.
-    """
-    
-    i = 1
-    FA = f(a)
+import numpy as np
+
+# Parámetros dados
+M = 3050  # Anomalía media
+e = 0.2056  # Excentricidad
+tol = 1e-8  # Tolerancia para la convergencia
+max_iter = 100  # Número máximo de iteraciones
+
+# Función f(E) = E - e*sin(E) - M
+def f(E, M, e):
+    return E - e * np.sin(E) - M
+
+# Método de Bisección
+def biseccion(f, a, b, M, e, tol, max_iter):
+    FA = f(a, M, e)
     
     # Verificar el teorema de Bolzano para asegurar que hay una raíz en el intervalo
-    if FA * f(b) >= 0:
-        print("El teorema de Bolzano no se cumple en el intervalo dado, es decir, f(a) y f(b) no tienen signos opuestos.")
+    if FA * f(b, M, e) >= 0:
+        print("El teorema de Bolzano no se cumple en el intervalo dado.")
         return None
     
-    while i <= N0:
-        # Calcular el punto medio del intervalo
+    for i in range(max_iter):
+        # Calcular el punto medio
         p = a + (b - a) / 2
-        FP = f(p)
+        FP = f(p, M, e)
         
-        # Verificar si hemos encontrado la raíz o si hemos alcanzado la tolerancia deseada
-        if FP == 0 or (b - a) / 2 < TOL:
-            print(f"La raíz aproximada es: {p} después de {i} iteraciones.")
+        # Verificar si hemos encontrado la raíz o alcanzado la tolerancia deseada
+        if abs(FP) < tol or (b - a) / 2 < tol:
+            print(f"La raíz aproximada es: {p} después de {i+1} iteraciones.")
             return p
         
-        # Incrementar el contador de iteraciones
-        i += 1
-        
-        # Decidir si continuar la búsqueda en el intervalo [a, p] o [p, b]
+        # Decidir si continuar en el intervalo [a, p] o [p, b]
         if FA * FP > 0:
             a = p
             FA = FP
         else:
             b = p
             
-    # Si se alcanza el número máximo de iteraciones sin encontrar una raíz
-    print(f'El método fracasó después de {N0} iteraciones.')
+    print(f'El método fracasó después de {max_iter} iteraciones.')
     return None
 
-# Función específica para la cual queremos encontrar una raíz
-def funcion(x):
-    return x**3 + 4*x**2 - 10
+# Definir el intervalo inicial para E
+a = 0
+b = 2 * np.pi
 
-# Parámetros iniciales
-a = 1
-b = 2
-TOL = 1e-4
-N0 = 100
-
-# Ejecutar el método de bisección
-raiz = biseccion(funcion, a, b, TOL, N0)
+# Ejecutar el método de bisección para encontrar E
+E_solution = biseccion(f, a, b, M, e, tol, max_iter)
+print(E_solution)
